@@ -13,14 +13,14 @@ const { cardsRouter } = require('./routes/cards');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '63025af6800f3696d88dc38c',
+    _id: '63052a85ece704f5494fbc25',
   };
   next();
 });
 
-app.use((req, res, next) => {
-  next();
-});
+// app.use((req, res, next) => {
+//   next();
+// });
 
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
