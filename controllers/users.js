@@ -59,10 +59,11 @@ const createUser = (req, res) => {
 };
 
 const updateProfileUser = (req, res) => {
+  const { name, about } = req.body;
+
   User.findByIdAndUpdate(
     req.user._id,
-    { name: 'new name', about: 'new job' },
-    // объект опций что бы передать в then уже обновлённую запись
+    { name, about },
     {
       new: true,
       runValidators: true,
@@ -90,10 +91,10 @@ const updateProfileUser = (req, res) => {
 };
 
 const updateAvatarUser = (req, res) => {
+  const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { avatar: 'k' },
-    // объект опций что бы передать в then уже обновлённую запись
+    { avatar },
     {
       new: true,
       runValidators: true,
