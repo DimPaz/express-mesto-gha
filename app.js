@@ -18,12 +18,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use((req, res, next) => {
-//   next();
-// });
-
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
+app.use('/', (req, res) => {
+  res.status(404).send({ message: 'Неверно написанный URL' });
+});
 
 async function main() {
   try {
