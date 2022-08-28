@@ -1,8 +1,8 @@
 const Card = require('../models/card');
 
 const getCard = async (req, res) => {
-  const cards = await Card.find({});
   try {
+    const cards = await Card.find({});
     res.status(200).send(cards);
   } catch (err) {
     res.status(500).send({ message: 'Произошла ошибка на сервере' });
@@ -39,7 +39,11 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при удалении карточки' });
+        res
+          .status(400)
+          .send({
+            message: 'Переданы некорректные данные при удалении карточки',
+          });
         return;
       }
       res.status(500).send({ message: 'Произошла ошибка на сервере' });

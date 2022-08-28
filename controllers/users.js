@@ -11,8 +11,8 @@
 const User = require('../models/user');
 
 const getUsers = async (req, res) => {
-  const users = await User.find({});
   try {
+    const users = await User.find({});
     res.status(200).send(users);
   } catch (err) {
     res.status(500).send({ message: 'Произошла ошибка на сервере' });
@@ -67,7 +67,7 @@ const updateProfileUser = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
+      upsert: false,
     },
   )
     .then((user) => {
@@ -98,7 +98,7 @@ const updateAvatarUser = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
+      upsert: false,
     },
   )
     .then((user) => {
