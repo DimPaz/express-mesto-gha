@@ -16,6 +16,6 @@ cardsRouter.delete('/:cardId', express.json(), deleteCard); // удаляет к
 cardsRouter.put('/:cardId/likes', express.json(), likeCard); // поставить лайк карточке
 cardsRouter.delete('/:cardId/likes', express.json(), dislikeCard); // убрать лайк с карточки
 
-module.exports = {
+module.exports = { 
   cardsRouter,
 };

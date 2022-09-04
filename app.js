@@ -11,6 +11,8 @@ const { cardsRouter } = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/error');
 
+const PageNotFoundError = require('./errors/PageNotFoundError'); //404
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -28,9 +30,10 @@ app.use(auth);
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
 app.use('/', (req, res) => {
+  // next(new PageNotFoundError('Неверно написанный URL'));
   res.status(404).send({ message: 'Неверно написанный URL' });
 });
-app.use(errorHandler);
+app.use(errorHandler); // мой обработчик ошибки 500
 
 async function main() {
   try {
