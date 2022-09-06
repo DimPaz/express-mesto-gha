@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
+const { isURL } = require('validator');
 
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true, 
+    required: true,
     minlength: 2,
     maxlength: 30,
   },
   link: {
     type: String,
     required: true,
+    validate: [isURL, 'Переданы некорректные данные при создании карточки'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

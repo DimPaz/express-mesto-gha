@@ -14,6 +14,8 @@ const {
 
 userRouter.get('/me', express.json(), getUserMe); // возвращает авторизованного пользователя
 userRouter.get('/', express.json(), getUsers); // возвращает всех пользователей
+
+// возвращает пользователя по _id
 userRouter.get(
   '/:userId',
   express.json(),
@@ -22,10 +24,8 @@ userRouter.get(
       userId: Joi.string().alphanum().length(24),
     }),
   }),
-  getUserById,
-); // возвращает пользователя по _id
-
-// userRouter.post('/', express.json(), createUser); // создаёт пользователя
+  getUserById
+);
 
 // обновляет профиль
 userRouter.patch(
@@ -37,7 +37,7 @@ userRouter.patch(
       about: Joi.string().min(2).max(30),
     }),
   }),
-  updateProfileUser,
+  updateProfileUser
 );
 
 userRouter.patch(
@@ -50,7 +50,7 @@ userRouter.patch(
     }),
   }),
 
-  updateAvatarUser,
+  updateAvatarUser
 ); // обновляет аватар
 
 module.exports = {

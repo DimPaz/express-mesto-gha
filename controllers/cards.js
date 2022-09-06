@@ -13,7 +13,6 @@ const getCard = (req, res, next) => {
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
-  console.log(owner);
   Card.create({ name, link, owner })
     .then((card) => res.send({ card }))
     .catch((err) => {
@@ -24,7 +23,7 @@ const createCard = (req, res, next) => {
           ),
         );
       }
-      next(err);
+      return next(err);
       // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
@@ -54,7 +53,7 @@ const deleteCard = (req, res, next) => {
           ),
         );
       }
-      next(err);
+      return next(err);
       // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
@@ -71,7 +70,7 @@ const likeCard = (req, res, next) => {
           new PageNotFoundError('Передан несуществующий _id карточки'),
         );
       }
-      res.send({ card });
+      return res.send({ card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -81,7 +80,7 @@ const likeCard = (req, res, next) => {
           ),
         );
       }
-      next(err);
+      return next(err);
       // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
@@ -98,7 +97,7 @@ const dislikeCard = (req, res, next) => {
           new PageNotFoundError('Передан несуществующий _id карточки'),
         );
       }
-      res.send({ card });
+      return res.send({ card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -106,7 +105,7 @@ const dislikeCard = (req, res, next) => {
           new BadRequestError('Переданы некорректные данные для снятия лайка'),
         );
       }
-      next(err);
+      return next(err);
       // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };

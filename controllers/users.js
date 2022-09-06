@@ -27,13 +27,13 @@ const getUserById = (req, res, next) => {
       if (!user) {
         return next(new PageNotFoundError('Такого пользователя не существует'));
       }
-      res.status(200).send(user);
+      return res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         return next(new BadRequestError('Не верный _id'));
       }
-      next(err);
+      return next(err);
       // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
@@ -65,7 +65,7 @@ const createUser = (req, res, next) => {
         if (err.code === 11000) {
           next(new ConflictError('Такой email уже существует'));
         }
-        next(err);
+        return next(err);
         // res.status(500).send({ message: 'Произошла ошибка на сервере' });
       });
   });
@@ -99,7 +99,6 @@ const login = (req, res, next) => {
             res.send({ data: user.toJSON() });
           } else {
             next(new UnauthorizedError('Неправильно введен логин или пароль'));
-            // res.status(401).send({ message: 'Неправильно введен логин или пароль' });
           }
         })
         .catch(next);
@@ -125,7 +124,7 @@ const updateProfileUser = (req, res, next) => {
           new PageNotFoundError('Пользователь с указанным _id не найден'),
         );
       }
-      res.send({ data: user });
+      return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -135,7 +134,7 @@ const updateProfileUser = (req, res, next) => {
           ),
         );
       }
-      next(err);
+      return next(err);
       // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
@@ -161,7 +160,7 @@ const updateAvatarUser = (req, res, next) => {
         //   .send({ message: 'Пользователь с указанным _id не найден' });
         // return;
       }
-      res.status(200).send({ data: user });
+      return res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -171,7 +170,7 @@ const updateAvatarUser = (req, res, next) => {
           ),
         );
       }
-      next(err);
+      return next(err);
       // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
