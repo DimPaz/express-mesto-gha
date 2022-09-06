@@ -80,7 +80,7 @@ const login = (req, res, next) => {
 
   User.findOne({ email })
     .select('+password')
-    .orFail(() => new Error('Пользователь не найден'))
+    .orFail(() => new UnauthorizedError('Неправильно введен логин или пароль'))
     .then((user) => {
       bcrypt
         .compare(password, user.password)

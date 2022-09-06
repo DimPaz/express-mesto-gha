@@ -24,7 +24,7 @@ userRouter.get(
       userId: Joi.string().alphanum().length(24),
     }),
   }),
-  getUserById
+  getUserById,
 );
 
 // обновляет профиль
@@ -37,7 +37,7 @@ userRouter.patch(
       about: Joi.string().min(2).max(30),
     }),
   }),
-  updateProfileUser
+  updateProfileUser,
 );
 
 userRouter.patch(
@@ -50,7 +50,7 @@ userRouter.patch(
     }),
   }),
 
-  updateAvatarUser
+  updateAvatarUser,
 ); // обновляет аватар
 
 module.exports = {

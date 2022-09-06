@@ -3,6 +3,8 @@ const { celebrate, Joi } = require('celebrate');
 
 const cardsRouter = express.Router();
 
+const regExp = /https?:\/\/(\w+.){2,5}/;
+
 const {
   getCard,
   createCard,
@@ -21,7 +23,7 @@ cardsRouter.post(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
-      link: Joi.string().required(),
+      link: Joi.string().required().pattern(regExp),
     }),
   }),
   createCard,
