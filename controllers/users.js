@@ -2,11 +2,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const BadRequestError = require('../errors/BadRequestError'); //400
-const UnauthorizedError = require('../errors/UnauthorizedError'); //401
-const ForbiddenError = require('../errors/ForbiddenError'); //403
-const PageNotFoundError = require('../errors/PageNotFoundError'); //404
-const ConflictError = require('../errors/ConflictError'); //409
+const BadRequestError = require('../errors/BadRequestError'); // 400
+const UnauthorizedError = require('../errors/UnauthorizedError'); // 401
+const ForbiddenError = require('../errors/ForbiddenError'); // 403
+const PageNotFoundError = require('../errors/PageNotFoundError'); // 404
+const ConflictError = require('../errors/ConflictError'); // 409
 
 const getUserMe = (req, res, next) => {
   User.findById(req.user._id)
@@ -39,7 +39,9 @@ const getUserById = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
   bcrypt.hash(password, 10).then((heshedPassword) => {
     User.create({
@@ -56,8 +58,8 @@ const createUser = (req, res, next) => {
         if (err.name === 'ValidationError') {
           return next(
             new BadRequestError(
-              'Переданы некорректные данные при создании профиля'
-            )
+              'Переданы некорректные данные при создании профиля',
+            ),
           );
         }
         if (err.code === 11000) {
@@ -80,24 +82,27 @@ const login = (req, res, next) => {
     .select('+password')
     .orFail(() => new Error('Пользователь не найден'))
     .then((user) => {
-      bcrypt.compare(password, user.password).then((isUserValid) => {
-        if (isUserValid) {
-          const token = jwt.sign({ _id: user._id }, 'SECRET');
+      bcrypt
+        .compare(password, user.password)
+        .then((isUserValid) => {
+          if (isUserValid) {
+            const token = jwt.sign({ _id: user._id }, 'SECRET', {
+              expiresIn: '7d',
+            });
 
-          res.cookie('jwt', token, {
-            maxAge: 604800,
-            httpOnly: true,
-            sameSite: true,
-          });
+            res.cookie('jwt', token, {
+              maxAge: 800000,
+              httpOnly: true,
+              sameSite: true,
+            });
 
-          res.send({ data: user.toJSON() });
-        } else {
-          throw next(
-            new UnauthorizedError('Неправильно введен логин или пароль')
-          );
-          // res.status(401).send({ message: 'Неправильно введен логин или пароль' });
-        }
-      });
+            res.send({ data: user.toJSON() });
+          } else {
+            next(new UnauthorizedError('Неправильно введен логин или пароль'));
+            // res.status(401).send({ message: 'Неправильно введен логин или пароль' });
+          }
+        })
+        .catch(next);
     })
     .catch(next);
 };
@@ -112,12 +117,12 @@ const updateProfileUser = (req, res, next) => {
       new: true,
       runValidators: true,
       upsert: false,
-    }
+    },
   )
     .then((user) => {
       if (!user) {
         return next(
-          new PageNotFoundError('Пользователь с указанным _id не найден')
+          new PageNotFoundError('Пользователь с указанным _id не найден'),
         );
       }
       res.send({ data: user });
@@ -126,8 +131,8 @@ const updateProfileUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         return next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении профиля'
-          )
+            'Переданы некорректные данные при обновлении профиля',
+          ),
         );
       }
       next(err);
@@ -144,12 +149,12 @@ const updateAvatarUser = (req, res, next) => {
       new: true,
       runValidators: true,
       upsert: false,
-    }
+    },
   )
     .then((user) => {
       if (!user) {
         return next(
-          new PageNotFoundError('Пользователь с указанным _id не найден')
+          new PageNotFoundError('Пользователь с указанным _id не найден'),
         );
         // res
         //   .status(404)
@@ -162,8 +167,8 @@ const updateAvatarUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         return next(
           new BadRequestError(
-            'Переданы некорректные данные при обновлении аватара'
-          )
+            'Переданы некорректные данные при обновлении аватара',
+          ),
         );
       }
       next(err);

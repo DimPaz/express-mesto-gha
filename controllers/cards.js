@@ -1,10 +1,8 @@
 const Card = require('../models/card');
 
-const BadRequestError = require('../errors/BadRequestError'); //400
-const UnauthorizedError = require('../errors/UnauthorizedError'); //401
-const ForbiddenError = require('../errors/ForbiddenError'); //403
-const PageNotFoundError = require('../errors/PageNotFoundError'); //404
-const ConflictError = require('../errors/ConflictError'); //409
+const BadRequestError = require('../errors/BadRequestError'); // 400
+const ForbiddenError = require('../errors/ForbiddenError'); // 403
+const PageNotFoundError = require('../errors/PageNotFoundError'); // 404
 
 const getCard = (req, res, next) => {
   Card.find({})
@@ -22,8 +20,8 @@ const createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         return next(
           new BadRequestError(
-            'Переданы некорректные данные при создании карточки'
-          )
+            'Переданы некорректные данные при создании карточки',
+          ),
         );
       }
       next(err);
@@ -38,7 +36,7 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         return next(
-          new PageNotFoundError('Карточка с указанным _id не найдена')
+          new PageNotFoundError('Карточка с указанным _id не найдена'),
         );
       }
       if (!card.owner.equals(owner)) {
@@ -52,8 +50,8 @@ const deleteCard = (req, res, next) => {
       if (err.name === 'CastError') {
         return next(
           new BadRequestError(
-            'Переданы некорректные данные при удалении карточки'
-          )
+            'Переданы некорректные данные при удалении карточки',
+          ),
         );
       }
       next(err);
@@ -65,12 +63,12 @@ const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {
         return next(
-          new PageNotFoundError('Передан несуществующий _id карточки')
+          new PageNotFoundError('Передан несуществующий _id карточки'),
         );
       }
       res.send({ card });
@@ -79,8 +77,8 @@ const likeCard = (req, res, next) => {
       if (err.name === 'CastError') {
         return next(
           new BadRequestError(
-            'Переданы некорректные данные для постановки лайка'
-          )
+            'Переданы некорректные данные для постановки лайка',
+          ),
         );
       }
       next(err);
@@ -92,12 +90,12 @@ const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {
         return next(
-          new PageNotFoundError('Передан несуществующий _id карточки')
+          new PageNotFoundError('Передан несуществующий _id карточки'),
         );
       }
       res.send({ card });
@@ -105,7 +103,7 @@ const dislikeCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         return next(
-          new BadRequestError('Переданы некорректные данные для снятия лайка')
+          new BadRequestError('Переданы некорректные данные для снятия лайка'),
         );
       }
       next(err);
