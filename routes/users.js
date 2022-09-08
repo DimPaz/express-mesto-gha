@@ -12,16 +12,15 @@ const {
   updateAvatarUser,
 } = require('../controllers/users');
 
-userRouter.get('/me', express.json(), getUserMe); // возвращает авторизованного пользователя
-userRouter.get('/', express.json(), getUsers); // возвращает всех пользователей
+userRouter.get('/me', getUserMe); // возвращает авторизованного пользователя
+userRouter.get('/', getUsers); // возвращает всех пользователей
 
 // возвращает пользователя по _id
 userRouter.get(
   '/:userId',
-  express.json(),
   celebrate({
     params: Joi.object().keys({
-      userId: Joi.string().alphanum().length(24),
+      userId: Joi.string().alphanum().length(24).hex(),
     }),
   }),
   getUserById,
@@ -30,7 +29,6 @@ userRouter.get(
 // обновляет профиль
 userRouter.patch(
   '/me',
-  express.json(),
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(10).max(30),
@@ -40,10 +38,9 @@ userRouter.patch(
   updateProfileUser,
 );
 
+// обновляет аватар
 userRouter.patch(
   '/me/avatar',
-  express.json(),
-
   celebrate({
     body: Joi.object().keys({
       avatar: Joi.string().pattern(regExp),
@@ -51,7 +48,7 @@ userRouter.patch(
   }),
 
   updateAvatarUser,
-); // обновляет аватар
+);
 
 module.exports = {
   userRouter,

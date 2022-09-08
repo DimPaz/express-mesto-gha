@@ -24,7 +24,6 @@ const createCard = (req, res, next) => {
         );
       }
       return next(err);
-      // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -54,7 +53,6 @@ const deleteCard = (req, res, next) => {
         );
       }
       return next(err);
-      // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -81,7 +79,6 @@ const likeCard = (req, res, next) => {
         );
       }
       return next(err);
-      // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -106,7 +103,6 @@ const dislikeCard = (req, res, next) => {
         );
       }
       return next(err);
-      // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 

@@ -5,6 +5,13 @@ const cardsRouter = express.Router();
 
 const regExp = /https?:\/\/(\w+.){2,5}/;
 
+// красивый способ я тоже постараяюсь сделать
+const allowedObjectKey = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24).hex(),
+  }),
+});
+
 const {
   getCard,
   createCard,
@@ -14,12 +21,11 @@ const {
 } = require('../controllers/cards');
 
 // возвращает все карточки
-cardsRouter.get('/', express.json(), getCard);
+cardsRouter.get('/', getCard);
 
 // создаёт карточку
 cardsRouter.post(
   '/',
-  express.json(),
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
@@ -30,40 +36,13 @@ cardsRouter.post(
 );
 
 // удаляет карточку по идентификатору
-cardsRouter.delete(
-  '/:cardId',
-  express.json(),
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().alphanum().length(24),
-    }),
-  }),
-  deleteCard,
-);
+cardsRouter.delete('/:cardId', allowedObjectKey, deleteCard);
 
 // поставить лайк карточке
-cardsRouter.put(
-  '/:cardId/likes',
-  express.json(),
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().alphanum().length(24),
-    }),
-  }),
-  likeCard,
-);
+cardsRouter.put('/:cardId/likes', allowedObjectKey, likeCard);
 
 // убрать лайк с карточки
-cardsRouter.delete(
-  '/:cardId/likes',
-  express.json(),
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().alphanum().length(24),
-    }),
-  }),
-  dislikeCard,
-);
+cardsRouter.delete('/:cardId/likes', allowedObjectKey, dislikeCard);
 
 module.exports = {
   cardsRouter,

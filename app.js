@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -43,19 +44,11 @@ app.post(
   createUser,
 );
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '63052a85ece704f5494fbc25',
-//   };
-//   next();
-// });
-
 app.use(auth);
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
 app.use('/', (req, res, next) => {
   next(new PageNotFoundError('Неверно написанный URL'));
-  // res.status(404).send({ message: 'Неверно написанный URL' });
 });
 
 // обработчики ошибок

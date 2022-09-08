@@ -4,9 +4,10 @@ const User = require('../models/user');
 
 const BadRequestError = require('../errors/BadRequestError'); // 400
 const UnauthorizedError = require('../errors/UnauthorizedError'); // 401
-const ForbiddenError = require('../errors/ForbiddenError'); // 403
 const PageNotFoundError = require('../errors/PageNotFoundError'); // 404
 const ConflictError = require('../errors/ConflictError'); // 409
+
+const duplicateKey = 11000;
 
 const getUserMe = (req, res, next) => {
   User.findById(req.user._id)
@@ -16,7 +17,7 @@ const getUserMe = (req, res, next) => {
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -34,7 +35,6 @@ const getUserById = (req, res, next) => {
         return next(new BadRequestError('Не верный _id'));
       }
       return next(err);
-      // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -62,21 +62,16 @@ const createUser = (req, res, next) => {
             ),
           );
         }
-        if (err.code === 11000) {
-          next(new ConflictError('Такой email уже существует'));
+        if (err.code === duplicateKey) {
+          return next(new ConflictError('Такой email уже существует'));
         }
         return next(err);
-        // res.status(500).send({ message: 'Произошла ошибка на сервере' });
       });
   });
 };
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    next(new ForbiddenError('Поля должны быть заполены'));
-  }
 
   User.findOne({ email })
     .select('+password')
@@ -91,7 +86,7 @@ const login = (req, res, next) => {
             });
 
             res.cookie('jwt', token, {
-              maxAge: 800000,
+              maxAge: 604800,
               httpOnly: true,
               sameSite: true,
             });
@@ -135,7 +130,6 @@ const updateProfileUser = (req, res, next) => {
         );
       }
       return next(err);
-      // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -155,10 +149,6 @@ const updateAvatarUser = (req, res, next) => {
         return next(
           new PageNotFoundError('Пользователь с указанным _id не найден'),
         );
-        // res
-        //   .status(404)
-        //   .send({ message: 'Пользователь с указанным _id не найден' });
-        // return;
       }
       return res.status(200).send({ data: user });
     })
@@ -171,7 +161,6 @@ const updateAvatarUser = (req, res, next) => {
         );
       }
       return next(err);
-      // res.status(500).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
